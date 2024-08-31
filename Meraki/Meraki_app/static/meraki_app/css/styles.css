@@ -11314,3 +11314,32 @@ section#contact form#contactForm :-ms-input-placeholder {
   font-size: 0.9rem;
   font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
+
+.table-responsive {
+  margin-top: 20px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th, .table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.table thead th {
+  background-color: #343a40;
+  color: white;
+}
+
+.table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Estilo para la tabla con scroll */
+.table-wrapper {
+  max-height: 400px;
+  overflow-y: auto;
+}
