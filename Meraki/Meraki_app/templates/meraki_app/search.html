@@ -1,0 +1,50 @@
+{% extends 'meraki_app/base.html' %}
+
+{% block merakiweb %}
+<header>
+    <div>
+        {% if productos %}
+        <table class="table mt-5">
+            <thead>
+                <tr>
+                    <th>ID#</th>
+                    <th>Nombre de producto</th>
+                    <th>Descripción</th>
+                    <th>Stock disponible</th>
+                    <th>Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                <tr>
+                    <td>{{ producto.id }}</td>
+                    <td>{{ producto.nombre }}</td>
+                    <td>{{ producto.descripcion }}</td>
+                    <td>
+                        {% with producto.stock_set.last as stock %}
+                            {% if stock %}
+                                {{ stock.cantidad }}
+                            {% else %}
+                                Sin stock
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                    <td>
+                        {% with producto.precio_set.last as precio %}
+                            {% if precio %}
+                                {{ precio.precio }}
+                            {% else %}
+                                Sin precio
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No se encontraron productos.</p>
+        {% endif %}
+    </div>
+</header>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "meraki_app/base.html" %}
+{% block title %} Productos {% endblock %}
+
+{% block merakiweb %}
+ 
+    <section class="page-section" id="productos">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase">Productos</h2>
+                <h3 class="section-subheading text-muted">Agregue un producto nuevo o busque uno existente en la lista.</h3>
+            </div>
+    
+    <!-- Formulario para agregar o modificar productos -->
+    <form method="post" action="{% url 'productos' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {% if form.instance.pk %}
+            <button type="submit" name="modificar_producto">Modificar Producto</button>
+            <input type="hidden" name="producto_id" value="{{ form.instance.id }}">
+        {% else %}
+            <button type="submit" name="agregar_producto">Agregar Producto</button>
+        {% endif %}
+    </form>
+    
+    <!-- Lista de productos -->
+    <ul>
+        {% for producto in productos %}
+            <li>
+                {{ producto.nombre }} - {{ producto.descripcion }}
+                <a href="{% url 'productos' %}?edit={{ producto.id }}">Editar</a>
+                <form method="post" action="{% url 'eliminar_producto' producto.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">Eliminar</button>
+                </form>
+            </li>
+        {% empty %}
+            <li>No hay productos disponibles.</li>
+        {% endfor %}
+    </ul>
+
+    
+{% endblock %} 
+

@@ -1,0 +1,28 @@
+{% extends "meraki_app/base.html" %}
+{% block title %} Precios {% endblock %}
+
+{% block merakiweb %}
+
+    <section class="page-section" id="precios">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase">Precios</h2>
+                <h3 class="section-subheading text-muted">Desde aqui se puede modificar el precio de los productos.</h3>
+            </div>
+    
+    <!-- Formulario para modificar precios -->
+    <form method="post" action="{% url 'precios' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" name="modificar_precios">Modificar Precios</button>
+    </form>
+    
+    <!-- Lista de precios -->
+    <ul>
+        {% for precio in precios %}
+            <li>{{ precio.producto.nombre }} - {{ precio.precio }}</li>
+        {% empty %}
+            <li>No hay precios disponibles.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

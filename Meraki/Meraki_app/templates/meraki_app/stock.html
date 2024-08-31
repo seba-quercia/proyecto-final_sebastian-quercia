@@ -1,0 +1,28 @@
+{% extends "meraki_app/base.html" %}
+{% block title %} Stock {% endblock %}
+
+{% block merakiweb %}
+
+    <section class="page-section" id="stock">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase">Stock</h2>
+                <h3 class="section-subheading text-muted">Desde aquí se puede consultar el stock de los productos ingresados a la base de datos o modificarlos.</h3>
+            </div>
+    
+    <!-- Formulario para modificar stock -->
+    <form method="post" action="{% url 'stock' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" name="modificar_stock">Modificar Stock</button>
+    </form>
+    
+    <!-- Lista de stock -->
+    <ul>
+        {% for stock in stocks %}
+            <li>{{ stock.producto.nombre }} - {{ stock.cantidad }}</li>
+        {% empty %}
+            <li>No hay stock disponible.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
