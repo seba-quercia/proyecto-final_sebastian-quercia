@@ -1,0 +1,28 @@
+{% extends "meraki_app/base.html" %}
+{% block title %}Iniciar Sesión{% endblock %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-10">
+            <div class="card shadow-sm">
+                <div class="card-header text-center bg-primary text-white">
+                    <h3>Iniciar Sesión</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <small class="text-muted">¿No tienes una cuenta? <a href="{% url 'register' %}">Regístrate aquí</a>.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

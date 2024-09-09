@@ -1,0 +1,49 @@
+{% extends "meraki_app/base.html" %}
+{% load form_filters %}
+{% block title %} Agregar Producto {% endblock %}
+
+{% block content %}
+
+<h1>{{ view.title }}</h1>
+
+<form method="post" action="{% url 'agregar_producto' %}">
+  {% csrf_token %}
+  
+
+  <style>
+    .bold-label {
+        font-weight: bold;
+    }
+</style>
+
+
+  <div class="mb-4">
+    <span class="bold-label">{{ form.nombre.label_tag }}</span>
+    {{ form.nombre|add_class:"form-control" }}
+  </div>
+  
+  <div class="mb-4">
+    <span class="bold-label">{{ form.descripcion.label_tag }}</span>
+    {{ form.descripcion|add_class:"form-control" }}
+  </div>
+  
+  <div class="mb-4">
+    <span class="bold-label">{{ form.imagen_url.label_tag }}</span>
+    {{ form.imagen_url|add_class:"form-control" }}
+  </div>
+  
+  <div class="mb-4">
+    <span class="bold-label">{{ stock_form.cantidad.label_tag }}</span>
+    {{ stock_form.cantidad|add_class:"form-control" }}
+  </div>
+
+  <div class="mb-4">
+    <span class="bold-label">{{ precio_form.precio.label_tag }}</span>
+    {{ precio_form.precio|add_class:"form-control" }}
+  </div>
+
+  <button type="submit" class="btn btn-primary">Guardar</button>
+  <a href="{% url 'inventario' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+
+{% endblock %}

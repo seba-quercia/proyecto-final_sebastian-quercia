@@ -1,0 +1,71 @@
+{% extends "meraki_app/base.html" %}
+{% load static %}
+{% load form_filters %}
+{% block title %} Sobre Nosotros {% endblock %}
+
+{% block content %}
+    <!-- About-->
+    <section class="page-section" id="about">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase">Acerca de nosotros</h2>
+                <h3 class="section-subheading text-muted">Meraki Tienda Holistica.</h3>
+            </div>
+            <ul class="timeline">
+                <li>
+                    <div class="timeline-image"><img class="rounded-circle img-fluid" src="{% static 'meraki_app/assets/img/about/1.jpg' %}" alt="..." /></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4>2007-2010</h4>
+                            <h4 class="subheading">Mis inicios en IT</h4>
+                        </div>
+                        <div class="timeline-body"><p class="text-muted"> Mis primeros pasos en el mundo de IT trabajando como soporte técnico</p></div>
+                    </div>
+                </li>
+                <li class="timeline-inverted">
+                    <div class="timeline-image"><img class="rounded-circle img-fluid" src="{% static 'meraki_app/assets/img/about/2.jpg' %}" alt="..." /></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4>Marzo de 2015</h4>
+                            <h4 class="subheading">Especialización</h4>
+                        </div>
+                        <div class="timeline-body"><p class="text-muted">Transiciono al mundo de Networking en IT donde aprendo un monton de cosas</p></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="timeline-image"><img class="rounded-circle img-fluid" src="{% static 'meraki_app/assets/img/about/3.jpg' %}" alt="..." /></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4>2021</h4>
+                            <h4 class="subheading">Perfeccionamiento constante</h4>
+                        </div>
+                        <div class="timeline-body"><p class="text-muted">Expando mi conocimiento aplicando varias certificaciones y metiendome en el mundo de cloud service</p></div>
+                    </div>
+                </li>
+                <li class="timeline-inverted">
+                    <div class="timeline-image"><img class="rounded-circle img-fluid" src="{% static 'meraki_app/assets/img/about/4.jpg' %}" alt="..." /></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4>Mayo 2024</h4>
+                            <h4 class="subheading">Expansión del conocimiento</h4>
+                        </div>
+                        <div class="timeline-body"><p class="text-muted">Comienzo a desarrollarme en Python para poder aplicarlo a mi trabajo en el mundo de netowrking pero tambien a los proyectos personales</p></div>
+                    </div>
+                </li>
+                <li class="timeline-inverted">
+                    <div class="timeline-image">
+                        <h4>
+                            Apruebenme
+                            <br />
+                            Por
+                            <br />
+                            Favor!
+                        </h4>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+</body>
+</html>
+{% endblock %}

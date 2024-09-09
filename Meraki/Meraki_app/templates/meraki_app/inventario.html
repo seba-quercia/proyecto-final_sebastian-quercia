@@ -1,98 +1,46 @@
 {% extends "meraki_app/base.html" %}
 {% load form_filters %}
-{% block title %} Gestion de inventario {% endblock %}
-{% block merakiweb %}
+{% block title %} Inventario {% endblock %}
+{% block content %}
 
 <section class="page-section" id="inventario">
-    <div class="container">
+    <div class="container mt-5">
         <div class="text-center">
-            <h2 class="section-heading text-uppercase">Gestion de inventario</h2>
-            <h3 class="section-subheading text-muted">Alta, baja y modificaciones de productos.</h3>
+            <h2 class="section-heading text-uppercase">Inventario</h2>
         </div>
 
-        <!-- Formulario para agregar o modificar productos -->
-        <div class="row">
-            <div class="col-md-8 offset-md-2">
-                <form method="post" action="{% url 'inventario' %}">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        {{ form.nombre.label_tag }}
-                        {{ form.nombre|add_class:"form-control" }}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.descripcion.label_tag }}
-                        {{ form.descripcion|add_class:"form-control" }}
-                    </div>
-                    <div class="mb-3">
-                        {{ stock_form.cantidad.label_tag }}
-                        {{ stock_form.cantidad|add_class:"form-control" }}
-                    </div>
-                    <div class="mb-3">
-                        {{ precio_form.precio.label_tag }}
-                        {{ precio_form.precio|add_class:"form-control" }}
-                    </div>
-                    {% if form.instance.pk %}
-                        <button type="submit" name="modificar_producto" class="btn btn-warning">Modificar Producto</button>
-                        <input type="hidden" name="producto_id" value="{{ form.instance.id }}">
-                    {% else %}
-                        <button type="submit" name="agregar_producto" class="btn btn-primary">Agregar Producto</button>
-                    {% endif %}
-                </form>
-            </div>
+        <!-- Botón para agregar producto -->
+        <div class="text-end mb-3">
+            <a href="{% url 'agregar_producto' %}" class="btn btn-primary">Agregar Producto</a>
         </div>
-
+        
         <!-- Tabla de productos -->
-        <div class="table-responsive mt-4">
+        <div class="table-responsive">
             <table class="table table-striped">
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Nombre</th>
-                        <th>Descripción</th>
                         <th>Stock</th>
                         <th>Precio</th>
-                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for producto in productos %}
-                        <tr>
-                            <td>{{ producto.nombre }}</td>
-                            <td>{{ producto.descripcion }}</td>
-                            <td>
-                                {% with stock_list|dictsort:"producto_id" as sorted_stock %}
-                                    {% for stock in sorted_stock %}
-                                        {% if stock.producto.id == producto.id %}
-                                            {{ stock.cantidad }}
-                                        {% endif %}
-                                    {% endfor %}
-                                {% endwith %}
-                            </td>
-                            <td>
-                                {% with precio_list|dictsort:"producto_id" as sorted_precio %}
-                                    {% for precio in sorted_precio %}
-                                        {% if precio.producto.id == producto.id %}
-                                            ${{ precio.precio }}
-                                        {% endif %}
-                                    {% endfor %}
-                                {% endwith %}
-                            </td>
-                            <td>
-                                <a href="{% url 'inventario' %}?edit={{ producto.id }}" class="btn btn-info btn-sm">Editar</a>
-                                <form method="post" action="{% url 'eliminar_producto' producto.id %}" style="display:inline;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                                </form>
-                            </td>
-                        </tr>
+                    <tr onclick="window.location.href='{% url 'producto_detalle' producto.pk %}'" style="cursor: pointer;">
+                        <td>{{ producto.pk }}</td>
+                        <td>{{ producto.nombre }}</td>
+                        <td>{{ producto.stock_set.first.cantidad }}</td>
+                        <td>{{ producto.precio_set.first.precio }}</td>
+                    </tr>
                     {% empty %}
-                        <tr>
-                            <td colspan="5" class="text-center">No hay productos disponibles.</td>
-                        </tr>
+                    <tr>
+                        <td colspan="4" class="text-center">No hay productos disponibles.</td>
+                    </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-
     </div>
 </section>
 

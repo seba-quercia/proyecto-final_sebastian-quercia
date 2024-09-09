@@ -1,0 +1,58 @@
+{% extends "meraki_app/base.html" %}
+{% block title %}Ajustes de Cuenta{% endblock %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 col-sm-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white text-center">
+                    <h3 class="mb-0">Ajustes de Cuenta</h3>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Formulario para editar perfil -->
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- Avatar -->
+                        <div class="text-center mb-4">
+                            {% if profile_form.instance.avatar %}
+                                <img src="{{ profile_form.instance.avatar.url }}" class="rounded-circle avatar-lg" alt="Avatar">
+                            {% else %}
+                                <img src="{% static 'meraki_app/assets/img/default-avatar.svg' %}" class="rounded-circle avatar-lg" alt="Avatar">
+                            {% endif %}
+                            <div class="mt-2">
+                                <label for="id_avatar" class="btn btn-info btn-sm">Cambiar Avatar</label>
+                                {{ profile_form.avatar }}
+                            </div>
+                        </div>
+
+                        <!-- Formulario de perfil -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2">Actualizar Perfil</h5>
+                            {{ profile_form.bio }}
+                        </div>
+
+                        <!-- Formulario de usuario -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2">Actualizar Usuario</h5>
+                            {{ user_form.as_p }}
+                        </div>
+
+                        <!-- Formulario de cambio de contraseña -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2">Cambiar Contraseña</h5>
+                            {{ password_form.as_p }}
+                        </div>
+
+                        <!-- Botón para guardar cambios -->
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-info btn-block">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "meraki_app/base.html" %}
+{% block title %}Registro{% endblock %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-10">
+            <div class="card shadow-sm">
+                <div class="card-header text-center bg-success text-white">
+                    <h3>Crear una cuenta</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                <ul>
+                                    {% for field in form %}
+                                        {% for error in field.errors %}
+                 S                           <li>{{ field.label }}: {{ error }}</li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                    {% for error in form.non_field_errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-block">Registrarse</button>
+                        </div>
+                    </form>                    
+                </div>
+                <div class="card-footer text-center">
+                    <small class="text-muted">¿Ya tienes una cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a>.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

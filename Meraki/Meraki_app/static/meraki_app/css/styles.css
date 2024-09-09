@@ -11343,3 +11343,42 @@ section#contact form#contactForm :-ms-input-placeholder {
   max-height: 400px;
   overflow-y: auto;
 }
+
+/* Estilos para el avatar en los ajustes de cuenta */
+.avatar-lg {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  margin-bottom: 15px;
+}
+
+/* Tarjetas con bordes y sombras suaves */
+.card {
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Botones con un tamaño ajustado */
+.btn-block {
+  padding: 10px;
+  font-size: 18px;
+}
+
+/* Estilo para formularios en modo responsivo */
+.form-control {
+  margin-bottom: 15px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+/* Ajuste de márgenes en la página */
+.container {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+/* Estilos generales para el texto en el card-footer */
+.card-footer {
+  background-color: #f8f9fa;
+  border-top: none;
+}

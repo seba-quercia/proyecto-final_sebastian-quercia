@@ -2,7 +2,7 @@
 
 ## Descripción
 
-**Meraki App** es una aplicación web desarrollada en Django para la gestión de inventarios y precios de productos. La aplicación permite a los usuarios agregar, modificar, buscar y visualizar productos, así como gestionar el stock y los precios asociados a cada producto.
+**Meraki App** es una aplicación web desarrollada en Django para la gestión de inventarios y precios de productos. La aplicación permite a los usuarios agregar, modificar, buscar y visualizar productos, así como gestionar el stock y los precios asociados a cada producto. Tambien se pueden crear perfiles de usuario los cuales por default van a tener permisos de solo lectura.
 
 ## Instalación
 
@@ -36,41 +36,46 @@ python manage.py createsuperuser
 python manage.py runserver
 
 
-**Orden de Pruebas**
+**Especificaciones**
 
 1. Inicio y Cuadro de Búsqueda
 Ruta: / (Página principal)
-Descripción: En la página principal, verás un cuadro de búsqueda que permite buscar productos por nombre. Introduce el nombre de un producto y haz clic en "Buscar" para ver los resultados.
-Funcionalidad: Prueba que el cuadro de búsqueda funcione correctamente y que te redirija a la página de resultados con los productos correspondientes.
+Descripción: En la página principal, verás un cuadro de búsqueda que permite buscar productos por nombre. Introduce el nombre de un producto y haz clic en "Buscar" para ver los resultados. (Para esto no hace falta tener user o estar logueado). Por ejemplo probar con **search/?q=Sahumerio**
 
-2. Agregar Productos
-Ruta: /productos/
-Descripción: Accede a la sección de productos donde podrás agregar nuevos productos. Completa el formulario con el nombre y la descripción del producto y haz clic en "Agregar".
-Funcionalidad: Verifica que el producto se agregue correctamente y aparezca en la lista de productos.
+Desde el NavBar se puede acceder a **/about/** y a los formularios de login y resgistro de usuarios
 
-3. Modificar Productos
-Ruta: /productos/
-Descripción: En la lista de productos, selecciona el producto que deseas modificar haciendo clic en "Editar". Cambia los valores deseados y guarda los cambios.
-Funcionalidad: Confirma que los cambios se reflejen en la lista de productos.
+Por default ya se encuentran generados los siguientes usuarios
 
-4. Gestión de Stock
-Ruta: /stocks/
-Descripción: Accede a la sección de gestión de stock. Aquí puedes agregar o modificar la cantidad de stock disponible para cada producto.
-Funcionalidad: Asegúrate de que la cantidad de stock se actualice correctamente y que se muestre en la vista de búsqueda.
+User: admin
+Password: Cisco123
+Permisos: superuser
 
-5. Gestión de Precios
-Ruta: /precios/
-Descripción: Accede a la sección de gestión de precios. Aquí puedes establecer o modificar el precio de cada producto.
-Funcionalidad: Verifica que los precios se actualicen correctamente y que se reflejen en la vista de búsqueda.
+User: romina
+Password: Sahumerio
+Permisos: Manager_L3 (View / Add / Change / Delete)
 
-6. Resultados de Búsqueda
-Ruta: /search/?q=<nombre_del_producto>
-Descripción: Realiza búsquedas para diferentes productos y confirma que los resultados se muestren correctamente en la tabla, incluyendo el nombre, la descripción, el stock y el precio.
-Funcionalidad: Asegúrate de que la búsqueda sea precisa y que los resultados coincidan con los datos ingresados.
-Estructura del Proyecto
-meraki_app/
-models.py: Define las clases Producto, Stock, y Precio.
-views.py: Contiene la lógica para las vistas de productos, stock, precios y búsqueda.
-forms.py: Define los formularios para agregar y modificar productos, stock y precios.
-templates/meraki_app/: Contiene las plantillas HTML del proyecto (base.html, productos.html, search.html, etc.)
-static/meraki_app/: Archivos estáticos como CSS, JS e imágenes.
+User: lautaro
+Password: patineta123
+Permisos: Empleado_L1 (View)
+
+
+2. Gestion de Inventario y Agregar/Modificar/Eliminar productos
+
+Una vez logueado, en el NavBar aparecera el menu de Gestion de Inventario, desde allí se podra agregar nuevos productos, o seleccionar uno de los ya existentes para ver sus detalles, y modificarlos o eliminarlos si se cuenta con los permisos requeridos
+
+- Vista general del inventario: **/inventario/**
+- Agregar producto **/producto/nuevo/**
+- Vista detallada de producto **/producto/[id]/**
+
+
+
+3. Ajustes de usuario y mensajeria
+Una vez logueado se puede acceder al menu de ajustes de usuario desde el NavBar haciendo click en el avatar
+
+Route **/accounts/account-settings/**
+
+   Desde aqui, se puede cambiar el avatar, escribir una Bio, cambiar el username, password, nombre y apellido
+
+Route **/accounts/messages/**
+
+   Desde aquí se puede gestionar la mensajeria entre cuentas de usuario

@@ -1,97 +1,112 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView
+from django.views.generic.base import TemplateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .models import Producto, Stock, Precio
 from .forms import ProductoForm, StockForm, PrecioForm
+
 
 def inicio(request):
     return render(request, 'meraki_app/base.html')
 
-def inventario(request):
-    if request.method == 'POST':
-        if 'modificar_producto' in request.POST:
-            # Modificar un producto existente
-            producto_id = request.POST.get('producto_id')
-            producto = get_object_or_404(Producto, id=producto_id)
-            form = ProductoForm(request.POST, instance=producto)
-            stock_form = StockForm(request.POST, instance=Stock.objects.filter(producto=producto).first())
-            precio_form = PrecioForm(request.POST, instance=Precio.objects.filter(producto=producto).first())
-            
-            if form.is_valid() and stock_form.is_valid() and precio_form.is_valid():
-                form.save()
+class InventarioListView(ListView):
+    model = Producto
+    template_name = 'meraki_app/inventario.html'
+    context_object_name = 'productos'
 
-                # Guardar o actualizar stock
-                stock_instance = Stock.objects.filter(producto=producto).first()
-                if stock_instance:
-                    stock_instance.cantidad = stock_form.cleaned_data['cantidad']
-                    stock_instance.save()
-                else:
-                    Stock.objects.create(producto=producto, cantidad=stock_form.cleaned_data['cantidad'])
+    def get_queryset(self):
+        return Producto.objects.order_by('nombre')
 
-                # Guardar o actualizar precio
-                precio_instance = Precio.objects.filter(producto=producto).first()
-                if precio_instance:
-                    precio_instance.precio = precio_form.cleaned_data['precio']
-                    precio_instance.save()
-                else:
-                    Precio.objects.create(producto=producto, precio=precio_form.cleaned_data['precio'])
+class ProductoSearchView(ListView):
+    model = Producto
+    template_name = 'meraki_app/search.html'
+    context_object_name = 'inventario'
 
-                return redirect('inventario')
+    def get_queryset(self):
+        query = self.request.GET.get('q', '')
+        if query:
+            return Producto.objects.filter(nombre__icontains=query)
+        return Producto.objects.none()
 
-        elif 'agregar_producto' in request.POST:
-            # Agregar un nuevo producto
-            form = ProductoForm(request.POST)
-            stock_form = StockForm(request.POST)
-            precio_form = PrecioForm(request.POST)
-            
-            if form.is_valid() and stock_form.is_valid() and precio_form.is_valid():
-                producto = form.save()
-                
-                # Crear y guardar stock
-                Stock.objects.create(producto=producto, cantidad=stock_form.cleaned_data['cantidad'])
-                
-                # Crear y guardar precio
-                Precio.objects.create(producto=producto, precio=precio_form.cleaned_data['precio'])
-                
-                return redirect('inventario')
-    elif 'edit' in request.GET:
-        # Editar un producto existente
-        producto_id = request.GET.get('edit')
-        producto = get_object_or_404(Producto, id=producto_id)
-        form = ProductoForm(instance=producto)
-        stock_instance = Stock.objects.filter(producto=producto).first()
-        precio_instance = Precio.objects.filter(producto=producto).first()
-        stock_form = StockForm(instance=stock_instance) if stock_instance else StockForm()
-        precio_form = PrecioForm(instance=precio_instance) if precio_instance else PrecioForm()
-    else:
-        form = ProductoForm()
-        stock_form = StockForm()
-        precio_form = PrecioForm()
+class InventarioDetailView(LoginRequiredMixin, DetailView):
+    model = Producto
+    template_name = 'meraki_app/producto_detalle.html'
+    context_object_name = 'producto'
 
-    productos = Producto.objects.all()
-    stock_list = Stock.objects.all()
-    precio_list = Precio.objects.all()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['stock'] = Stock.objects.filter(producto=self.object).first()
+        context['precio'] = Precio.objects.filter(producto=self.object).first()
+        context['editable'] = self.request.user.has_perm('Meraki_app.change_producto') or self.request.user.has_perm('Meraki_app.delete_producto')
+        return context
 
-    return render(request, 'meraki_app/inventario.html', {
-        'productos': productos,
-        'form': form,
-        'stock_form': stock_form,
-        'precio_form': precio_form,
-        'stock_list': stock_list,
-        'precio_list': precio_list,
-    })
+class InventarioCreateView(PermissionRequiredMixin, CreateView):
+    model = Producto
+    form_class = ProductoForm
+    template_name = 'meraki_app/agregar_producto.html'
+    success_url = reverse_lazy('inventario')
+    permission_required = 'Meraki_app.add_producto'
 
-def eliminar_producto(request, producto_id):
-    producto = get_object_or_404(Producto, id=producto_id)
-    if request.method == 'POST':
-        producto.delete()
-        return redirect('inventario')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Agregar Producto'
+        context['stock_form'] = StockForm()  
+        context['precio_form'] = PrecioForm()  
+        return context
+    
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        stock_form = StockForm(self.request.POST)
+        if stock_form.is_valid():
+            stock = Stock(producto=self.object, cantidad=stock_form.cleaned_data['cantidad'])
+            stock.save()
+        
+        precio_form = PrecioForm(self.request.POST)
+        if precio_form.is_valid():
+            precio = Precio(producto=self.object, precio=precio_form.cleaned_data['precio'])
+            precio.save()
+        
+        return response
 
-def search(request):
-    query = request.GET.get('q', '')
-    if query:
-        productos = Producto.objects.filter(nombre__icontains=query)
-    else:
-        productos = Producto.objects.none()
+class InventarioUpdateView(UpdateView):
+    model = Producto
+    form_class = ProductoForm
+    template_name = 'meraki_app/producto_detalle.html'
+    success_url = reverse_lazy('inventario')
 
-    return render(request, 'meraki_app/search.html', {
-        'inventario': productos,
-    })
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Editar Producto'
+        context['stock_form'] = StockForm(instance=Stock.objects.filter(producto=self.object).first())
+        context['precio_form'] = PrecioForm(instance=Precio.objects.filter(producto=self.object).first())
+        return context
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        stock_form = StockForm(self.request.POST, instance=Stock.objects.filter(producto=self.object).first())
+        if stock_form.is_valid():
+            stock = stock_form.save(commit=False)
+            stock.producto = self.object
+            stock.save()
+        
+        precio_form = PrecioForm(self.request.POST, instance=Precio.objects.filter(producto=self.object).first())
+        if precio_form.is_valid():
+            precio = precio_form.save(commit=False)
+            precio.producto = self.object
+            precio.save()
+        
+        return response
+
+    
+class InventarioDeleteView(DeleteView):
+    model = Producto
+    template_name = 'meraki_app/confirm_delete.html'
+    success_url = reverse_lazy('inventario')
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+class AboutView(TemplateView):
+    template_name = 'meraki_app/about.html'

@@ -1,0 +1,61 @@
+{% extends "meraki_app/base.html" %}
+{% block title %}Mensajes{% endblock %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-white">
+                    <h3>Mensajes</h3>
+                </div>
+                <div class="card-body">
+                    {% if message_detail %}
+                        <!-- Detalle de un mensaje -->
+                        <div>
+                            <h5>Mensaje de {{ message_detail.sender.username }}</h5>
+                            <p><strong>Asunto:</strong> {{ message_detail.subject }}</p>
+                            <p><strong>Fecha:</strong> {{ message_detail.timestamp|date:"d M Y H:i" }}</p>
+                            <p><strong>Mensaje:</strong> {{ message_detail.body }}</p>
+                            <a href="{% url 'messages' %}" class="btn btn-outline-secondary">Volver a la lista de mensajes</a>
+                        </div>
+                    {% else %}
+                        <!-- Lista de mensajes recibidos -->
+                        <div class="mb-4">
+                            <h5>Mensajes Recibidos</h5>
+                            {% if received_messages %}
+                                <ul class="list-group">
+                                    {% for message in received_messages %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>{{ message.sender.username }}</strong>
+                                                <p class="mb-1">{{ message.subject }}</p>
+                                                <small>{{ message.timestamp|date:"d M Y H:i" }}</small>
+                                            </div>
+                                            <a href="{% url 'message_detail' message.id %}" class="btn btn-outline-primary btn-sm">Ver</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p>No tienes mensajes recibidos.</p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Formulario para enviar mensajes -->
+                    <div class="mt-5">
+                        <h5>Enviar un Nuevo Mensaje</h5>
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <div class="d-grid mt-3">
+                                <button type="submit" class="btn btn-warning btn-block">Enviar Mensaje</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

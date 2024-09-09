@@ -1,0 +1,98 @@
+{% extends "meraki_app/base.html" %}
+{% load form_filters %}
+{% block title %} Detalle del Producto {% endblock %}
+
+{% block content %}
+
+<section class="page-section bg-light" id="producto_detalle">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-heading text-uppercase">Detalle del Producto</h2>
+        </div>
+
+        <div class="row mb-4">
+            <!-- Mostrar la imagen del producto -->
+            <div class="col-md-6 offset-md-3 text-center">
+                {% if producto.imagen_url %}
+                    <img src="{{ producto.imagen_url }}" alt="{{ producto.nombre }}" class="img-fluid rounded shadow-sm" style="max-height: 400px; object-fit: cover;">
+                {% else %}
+                    <p class="text-muted">No hay imagen disponible para este producto.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Formulario para editar el producto -->
+            <div class="col-md-8 offset-md-2">
+                <div class="card border-light shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Detalle del Producto</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="{% url 'producto_editar' producto.pk %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="id_nombre" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="id_nombre" name="nombre" value="{{ producto.nombre }}" {% if not editable %}readonly{% endif %}>
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_descripcion" class="form-label">Descripción</label>
+                                <textarea class="form-control" id="id_descripcion" name="descripcion" rows="4" {% if not editable %}readonly{% endif %}>{{ producto.descripcion }}</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_imagen_url" class="form-label">URL de la Imagen</label>
+                                <input type="text" class="form-control" id="id_imagen_url" name="imagen_url" value="{{ producto.imagen_url }}" {% if not editable %}readonly{% endif %}>
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_stock" class="form-label">Stock</label>
+                                <input type="number" class="form-control" id="id_stock" name="cantidad" value="{{ stock.cantidad }}" {% if not editable %}readonly{% endif %}>
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_precio" class="form-label">Precio</label>
+                                <input type="number" class="form-control" id="id_precio" name="precio" step="0.01" value="{{ precio.precio }}" {% if not editable %}readonly{% endif %}>
+                            </div>
+                            {% if editable %}
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            <a href="{% url 'inventario' %}" class="btn btn-secondary">Descartar Cambios</a>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confirmación de eliminación -->
+        {% if editable %}
+        <div class="row mt-4">
+            <div class="col-md-8 offset-md-2 text-center">
+                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">Eliminar Producto</button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                ¿Estás seguro de que deseas eliminar el producto "{{ producto.nombre }}"?
+                            </div>
+                            <div class="modal-footer">
+                                <form method="post" action="{% url 'eliminar_producto' producto.pk %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}
